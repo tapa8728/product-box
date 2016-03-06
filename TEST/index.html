@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>Product Box</title>
+		<style>
+			#container {
+				background: white;
+                /* Specify the canvas size*/
+                height: 600px;
+                width: 800px;
+			}
+		</style>
+	</head>
+
+	<body>
+	<h2><center> PRODUCT BOX DEMO - ROADTRIP</center></h2>
+	<center><div id="container"></div></center>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+    
+	<!--Importants all of the awesomeness of Three.js-->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r72/three.min.js"></script> -->
+	<script type="text/javascript" src="threejs/build/three.min.js"></script>
+	
+	<!-- 1. Import the collada loader script -->
+	<script type="text/javascript" src="threejs/examples/js/loaders/ColladaLoader.js"></script>
+
+	<script type="text/javascript">
+	
+	/**
+	 * 2. Create a variable to hold the model
+	 */
+	 var model;
+	
+	/**
+	 * 3. Load the model using the THREE.ColladaLoader
+	 */
+	 var loader = new THREE.ColladaLoader();
+	  loader.options.convertUpAxis = true;
+	 loader.load('product_box.dae', function(result) {
+		model = result.scene;
+		//model.doublesided = true;
+		
+		/**
+		 * 4. Call init once the model is loaded
+		 */
+		init();
+	 });
+	 
+	function init() {
+	
+	/************** Set up the scene **********************/
+	// Set the size of the container where we're going to be drawing things
+	var WIDTH = 800;
+    var HEIGHT = 550;
+        
+    // Instatiate the scene
+    var scene = new THREE.Scene();
+        
+	// Get a place on the webpage to put the scene
+    var $container = $('#container');
+
+	// Set some camera attributes
+    var CAMERA_ANGLE = 40;
+    var ASPECT_RATIO = WIDTH / HEIGHT;
+    var NEAR_PLANE = 0.1;
+    var FAR_PLANE = 10000;
+        
+	// Set-up a Camera
+    var camera = new THREE.PerspectiveCamera(CAMERA_ANGLE,
+        ASPECT_RATIO,
+        NEAR_PLANE, FAR_PLANE
+        );
+        
+	// Put the camera somewhere useful
+	camera.position.z = 12;
+	camera.position.y = 2;
+	camera.position.x = 1;
+	camera.up = new THREE.Vector3(0,0,4);
+        
+    // Create a WebGL Renderer
+    var renderer = new THREE.WebGLRenderer();
+        
+	// Tell the renderer how many pixels it has to work with
+    renderer.setSize(WIDTH, HEIGHT);
+
+	// Link the renderer to the webpage
+    $container.append(renderer.domElement);
+
+    /************ Now let's draw something! **********************/
+	
+	
+	/**
+	 * 5. Add the loaded model to the scene
+	 */
+	 scene.add(model);
+	
+        
+	// And the camera
+    scene.add(camera);
+
+	// Create a point light
+	var pointLight = new THREE.PointLight(0xFFFFFF);
+		
+	// Put it somewhere
+	pointLight.position.x = 10;
+	pointLight.position.y = 50;
+	pointLight.position.z = 130;
+
+	// Add the light to the scene
+    scene.add(pointLight);
+
+	// Draw!
+    var clock = new THREE.Clock;
+	var time;
+    function render() {
+        renderer.render(scene, camera);
+		
+		time = clock.getDelta();
+		
+		/**
+		 * 6. Rotate the model?
+		 */
+	    model.rotation.y -= time/2;
+	    //model.rotation.x = model.rotation.x- time/2;
+	   //model.rotation.z -= 0.0002;
+		
+        requestAnimationFrame(render);
+    }
+
+    render();
+	
+	}
+        
+	</script>
+</html>
